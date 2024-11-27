@@ -1,4 +1,4 @@
-using .Method_ranking
+using Method_ranking
 using Test
 
 @testset "Method_ranking.jl" begin

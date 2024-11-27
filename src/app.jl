@@ -63,7 +63,7 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
             fp_dict_to_add = hcat(DataFrame("ID"=>comp_i), fp_temp)
             fp_dict = append!(fp_dict, fp_dict_to_add)
         end
-        println("Fingerprints calculated for all compounds.")
+        #println("Fingerprints calculated for all compounds.")
         
         # Create PubChem compressed FP dictionary
         function compressPubChemFPs(ACfp::DataFrame, PCfp::DataFrame)
@@ -71,7 +71,7 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
             pubinfo = convert.(Int, Matrix(PCfp))
             findidx(FP_number) = findfirst(x -> x .== "PubchemFP$FP_number", names(PCfp))
 
-            #ring counts
+            # Ring counts
             FP1tr[!, "PCFP-r3"] = pubinfo[:, findidx(115)]
             FP1tr[!, "PCFP-r3"][pubinfo[:, findidx(122)].==1] .= 2
             FP1tr[!, "PCFP-r4"] = pubinfo[:, findidx(129)]
@@ -109,7 +109,7 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
             FP1tr[!, "minHetrCount"] = het
 
             custom_FPs_df = DataFrame(convert.(Int16, Matrix(FP1tr)), names(FP1tr))
-            println("Compressed fingerprints calculated")
+            println("Compressed fingerprints calculation: Completed.")
 
             return custom_FPs_df
         end
@@ -119,12 +119,12 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
 
         ## Associate the dataset_df to the fp_dict
         fp_dataset = DataFrame()
-        for compound_i in ProgressBar(1:size(dataset_df,1))   # Delete after debugging: compound_i = 3
+        for compound_i in (1:size(dataset_df,1))   # Delete after debugging: compound_i = 3
             fp_dict_comp = fp_dict[findfirst(x -> x.== dataset_df[compound_i,"ID"], fp_dict[:,"ID"]),:]
             fp_dataset_to_add = hcat(DataFrame(dataset_df[compound_i,:]),DataFrame(fp_dict_comp[2:end]))
             fp_dataset = append!(fp_dataset, fp_dataset_to_add)
         end
-        println("FP dataset ready.")
+        #println("FP dataset ready.")
         return fp_dataset
     end
     function predict_presence_and_windows(fp_dataset)
@@ -168,14 +168,14 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
 
         # The presence prediction overlaps the RT window prediction (i.e. If a compound does not appear in a specific method, there is no RT window with it.)
         dataset[findall(x->x .== "NaN", dataset[:,"Presence"]), "RT Window"] .= "No"
-        println("Prediction complete.")
+        println("Retention information prediction: Completed.")
         return dataset[:,1:5]
     end
     function set_score_legacy(dataset)
         scores_list = DataFrame()
         no_of_methods = length(unique(dataset[:, "Method Name"]))
     
-        for method_i in ProgressBar(1:no_of_methods)    # method_i=2
+        for method_i in (1:no_of_methods)    # method_i=2
             method_name_i = unique(dataset[:, "Method Name"])[method_i]
             method_i_idx = findall(x -> x .== method_name_i, dataset[:, "Method Name"])
             method_set = dataset[method_i_idx, :]
