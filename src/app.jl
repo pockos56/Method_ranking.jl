@@ -8,13 +8,13 @@ A function that ranks and outputs the score of chromatography methods based on t
 julia> rank_methods(["CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "CC(C)(C1=CC=C(C=C1)O)C2=CC=C(C=C2)O", "C1=CC=C(C=C1)C[C@@H](C(=O)O)N"])
 ```
 """
-function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100, w_first=-10, w_last=-5, w_No=-40, windows=5, sorted=true, presence_model_version="latest", window_model_version="latest", identifier = "auto", path_models="C:\\Users\\alex_\\Documents\\GitHub\\Method_ranking\\models\\")
+function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100, w_first=-10, w_last=-5, w_No=-40, windows=5, sorted=true, presence_model_version="latest", window_model_version="latest", identifier = "auto")
     # Packages
     cat = pyimport("catboost")
     pcp = pyimport("pubchempy")
     pd = pyimport("padelpy")
     cd(@__DIR__)
-
+    path_models = (pwd() * "\\data\\models\\")
     
     function from_INCHIKEY_to_fp(mol_identifiers)
         # Auto assignment to identifier argument
@@ -58,7 +58,7 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
                 error("Failure to calculate fingerprint for compound: $comp_i. \nPossible solutions: \n1. Check spelling. \n2. Visit PubChem database and update to the latest InChIKey.\n3. Remove from the list of molecular identifiers and rerun.")
             end
             if size(fp_temp,2) != 1661
-                error("An incorrect type of fingerprints has been calculated. This error should never occur.") end
+                error("An incorrect type of fingerprints has been calculated. This error should never occur. Check if the file descriptors.xml is in the correct directory.") end
 
             fp_dict_to_add = hcat(DataFrame("ID"=>comp_i), fp_temp)
             fp_dict = append!(fp_dict, fp_dict_to_add)
