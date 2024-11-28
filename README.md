@@ -2,10 +2,6 @@
 
 This julia package was created for the automation of chomatography methods selection.
 
-The project is  a
-
-
-
 ### Installation
 
 #### Install Julia
