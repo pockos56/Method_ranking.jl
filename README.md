@@ -2,14 +2,21 @@
 
 This julia package was created for the automation of chomatography methods selection.
 
-The project is 
+The project is  a
 
 
 
 ### Installation
+
+#### Install Julia
+The package is written in Julia language, which can be downloaded at the official site for free.
+To use Julia, it is required to install a text editor (Microsoft Visual Studio Code) and the necessary Julia extension.
+
+The full instructions are provided in three simple steps (https://marketplace.visualstudio.com/items?itemName=julialang.language-julia). 
+
+#### Install Dependencies
 ```julia
 
-# Install dependencies
 using Pkg
 Pkg.add("PyCall")
 Pkg.add("Conda")
@@ -51,4 +58,8 @@ comp_list_2 = ["CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "CC(C)(C1=CC=C(C=C1)O)C2=CC=C(C=C
 scores_2 = rank_methods(comp_list)
 
 ```
-Note
+
+#### Notes
+The method scores should be the same regardless of the input molecular data type (SMILES, InChIKeys).
+
+While only the 3 most suitable methods are displayed, the full ranking and the score of each method is stored in the scores (e.g. scores_1) variable.
