@@ -30,7 +30,13 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
 
         # Load Inchikeys and list of method names
         method_names_list = CSV.read(path_models*"method_names.csv", DataFrame)
-        mol_identifiers = string.(unique(strip.(mol_identifiers)))
+        if typeof(mol_identifiers) == String        # e.g. mol_identifiers = "CCCCO"
+            mol_identifiers = [mol_identifiers]
+        end
+        if typeof(mol_identifiers) == Vector{String}
+            mol_identifiers = Vector(string.(unique(strip.(mol_identifiers)))) 
+        else error("rank_methods function requires the compound info as argument. E.g. rank_methods([\"C1=CC=CC=C1\",\"CCCC\",\"CC(CC)O\"])")
+        end
 
         # Create dataset dataframe
         dataset_df = DataFrame()
@@ -255,8 +261,8 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
             score_val_raw = z_homo + z_first + z_last + z_No
             score_val = score_sigmoid_norm(score_val_raw)
             if isempty(ratios)
-                score_val = 0 end
-            scores_list_to_add = DataFrame("Method number"=>method_i, "Method Name"=>method_name_i, "Score"=>score_val)
+                score_val = 0.0 end
+            scores_list_to_add = DataFrame("Method number"=>method_i, "Method Name"=>method_name_i, "Score"=>Float64(score_val))
             scores_list = append!(scores_list, scores_list_to_add)
         end
         scores_list_sorted = sort(scores_list, "Score", rev=true)
