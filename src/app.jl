@@ -148,7 +148,7 @@ function rank_methods(mol_identifiers::Union{String, Vector{String}}; w_homo=100
         try
             global presence_model = cat.CatBoostClassifier().load_model(presence_model_file)
         catch
-            error("Available presence model versions: $([versions for versions in presence_model_available]). Enter version as string, e.g. '0.1' or 'latest'")
+            error("Available presence model versions: $([versions for versions in presence_model_available]). Enter version as string, e.g. presence_model_version = \"0.1\" or \"latest\"")
         end
 
         window_model_available = readdir(path_models)[contains.(readdir(path_models),"window_model_v")]
